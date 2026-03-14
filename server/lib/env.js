@@ -1,0 +1,25 @@
+export const env = {
+  nodeEnv: process.env.NODE_ENV || 'development',
+  port: Number(process.env.PORT) || 5000,
+  frontendOrigin: process.env.FRONTEND_ORIGIN || 'http://localhost:5173',
+  jwtSecret: process.env.JWT_SECRET || 'change-me-in-production',
+  jwtIssuer: process.env.JWT_ISSUER || 'oj-devices-api',
+  jwtAudience: process.env.JWT_AUDIENCE || 'oj-devices-client',
+  jwtExpiresInHours: Number(process.env.JWT_EXPIRES_IN_HOURS) || 24,
+  refreshTokenDays: Number(process.env.REFRESH_TOKEN_DAYS) || 14,
+  adminEmail: (process.env.ADMIN_EMAIL || 'admin@ojdevices.ng').trim().toLowerCase(),
+  adminPassword: process.env.ADMIN_PASSWORD || 'ChangeMe123!',
+  adminName: process.env.ADMIN_NAME || 'OJ Devices Admin',
+  paystackSecretKey: process.env.PAYSTACK_SECRET_KEY || '',
+  paystackCallbackUrl: process.env.PAYSTACK_CALLBACK_URL || '',
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
+  cloudinaryFolder: process.env.CLOUDINARY_FOLDER || 'oj-devices',
+  brevoApiKey: process.env.BREVO_API_KEY || '',
+  brevoSenderEmail: process.env.BREVO_SENDER_EMAIL || 'support@ojdevices.ng',
+  brevoSenderName: process.env.BREVO_SENDER_NAME || 'OJ Devices',
+  otpTtlMinutes: Number(process.env.OTP_TTL_MINUTES) || 10,
+}
+
+export const isProduction = env.nodeEnv === 'production'

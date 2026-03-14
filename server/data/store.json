@@ -1,0 +1,15 @@
+{
+  "users": [],
+  "orders": [],
+  "otps": [],
+  "refreshTokens": [],
+  "customProducts": [],
+  "settings": {
+    "storeName": "OJ Devices",
+    "supportEmail": "support@ojdevices.ng",
+    "supportPhone": "+2348001234567",
+    "brevoSenderEmail": "",
+    "brevoSenderName": "OJ Devices"
+  },
+  "auditLogs": []
+}
