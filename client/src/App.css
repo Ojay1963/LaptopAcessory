@@ -1575,10 +1575,20 @@ main {
   gap: 12px;
 }
 
-.announcement-socials span,
-.footer-socials span {
-  font-size: 0.72rem;
-  text-transform: lowercase;
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  color: currentColor;
+}
+
+.social-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  stroke: none;
 }
 
 .topbar-reference {
@@ -1853,12 +1863,17 @@ main {
   aspect-ratio: 0.82 / 1;
   border: none;
   border-radius: 0;
-  background: linear-gradient(180deg, #ffffff, #f7f4f1);
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.98), rgba(247, 244, 241, 0.92)),
+    linear-gradient(180deg, #fffdfb, #f5f1ec);
+  overflow: hidden;
 }
 
 .market-card img {
   object-fit: contain;
-  padding: 12px;
+  padding: 22px 18px 16px;
+  filter: drop-shadow(0 18px 14px rgba(31, 31, 31, 0.08));
+  transform: scale(0.98);
 }
 
 .sale-badge {
@@ -1876,20 +1891,31 @@ main {
 }
 
 .product-body {
-  gap: 6px;
-  padding: 0 4px;
+  gap: 7px;
+  padding: 0 4px 2px;
+}
+
+.product-brand {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #a48b72;
+  font-weight: 700;
 }
 
 .product-body h3 {
-  min-height: 44px;
-  font-size: 0.88rem;
-  -webkit-line-clamp: 4;
+  min-height: 78px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  line-height: 1.38;
+  -webkit-line-clamp: 5;
 }
 
 .reference-price-block {
   display: flex;
   align-items: baseline;
   gap: 8px;
+  margin-top: 2px;
 }
 
 .market-price {
@@ -1903,27 +1929,39 @@ main {
 }
 
 .reference-spec-copy {
-  min-height: 52px;
-  color: #171717;
-  font-size: 0.78rem;
-  line-height: 1.35;
+  min-height: 60px;
+  color: #2a2724;
+  font-size: 0.76rem;
+  line-height: 1.45;
 }
 
 .reference-card-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 10px;
-  padding-top: 8px;
+  gap: 6px;
+  padding-top: 7px;
   border-top: 1px solid #f0ece8;
-  color: #8f8982;
+  color: #7f7972;
   font-size: 0.63rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.reference-card-meta span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 7px;
+  border: 1px solid #ece4dd;
+  background: #fbf8f4;
+  border-radius: 999px;
 }
 
 .reference-card-actions {
   display: flex;
   gap: 8px;
   align-items: center;
-  padding-top: 4px;
+  padding-top: 6px;
 }
 
 .wishlist-btn,
@@ -1945,8 +1983,9 @@ main {
 
 .reference-card-actions .wishlist-btn,
 .reference-card-actions .compare-btn {
-  min-width: 64px;
-  padding: 0 10px;
+  min-width: 58px;
+  padding: 0 9px;
+  font-size: 0.68rem;
 }
 
 .pagination {

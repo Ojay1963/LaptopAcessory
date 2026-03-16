@@ -276,40 +276,7 @@ const remoteLaptopImages = {
 }
 
 const resolveLaptopImage = (item, index) => {
-  const lower = item.name.toLowerCase()
-  const tone = pickTone(item.name, index)
-  const accent = pickAccent(item.name, index)
-  const meta = item.features?.join(' | ') || 'Premium Laptop'
-
-  if (hasAny(lower, ['macbook'])) return remoteLaptopImages.appleMacbookPro
-  if (hasAny(lower, ['latitude 7340'])) return remoteLaptopImages.dellLatitude7340
-  if (hasAny(lower, ['inspiron 3520'])) return remoteLaptopImages.dellInspiron3520
-  if (hasAny(lower, ['elitebook'])) return remoteLaptopImages.hpElitebook640
-  if (hasAny(lower, ['hp laptop 15', 'hp 15-', 'pavilion 15'])) return remoteLaptopImages.hpLaptop15
-  if (hasAny(lower, ['pavilion x360'])) return remoteLaptopImages.hpEnvyX360
-  if (hasAny(lower, ['spectre'])) return remoteLaptopImages.hpSpectreX360
-  if (hasAny(lower, ['envy'])) return remoteLaptopImages.hpEnvyX360
-  if (hasAny(lower, ['victus'])) return remoteLaptopImages.hpVictus15
-  if (hasAny(lower, ['thinkbook'])) return remoteLaptopImages.lenovoThinkbook13s
-  if (hasAny(lower, ['thinkpad l14', 'thinkpad l13', 'thinkpad'])) return remoteLaptopImages.lenovoThinkpadL14
-  if (hasAny(lower, ['ideapad'])) return remoteLaptopImages.lenovoIdeaPad1
-  if (hasAny(lower, ['predator'])) return remoteLaptopImages.acerPredatorHeliosNeo16
-  if (hasAny(lower, ['gf63'])) return remoteLaptopImages.msiGf63Thin
-  if (hasAny(lower, ['wf66'])) return remoteLaptopImages.msiWf66
-
-  if (hasAny(lower, ['x360', 'yoga', '2-in-1', 'convertible'])) {
-    return buildCatalogSvg(item.name, 'Laptop', tone, accent, convertibleLaptopShape, meta)
-  }
-
-  if (hasAny(lower, ['rog', 'gaming', 'predator', 'nitro', 'raider', 'alienware', 'legion', 'omen', 'tuf', 'blade'])) {
-    return buildCatalogSvg(item.name, 'Laptop', tone, accent, gamingLaptopShape, meta)
-  }
-
-  if (hasAny(lower, ['thinkpad', 'latitude', 'librem', 'lemur', 'infinitybook'])) {
-    return buildCatalogSvg(item.name, 'Laptop', tone, accent, businessLaptopShape, meta)
-  }
-
-  return buildCatalogSvg(item.name, 'Laptop', tone, accent, laptopShape, meta)
+  return remoteLaptopImages.hpLaptop15
 }
 
 const resolveAccessoryImage = (item, index) => {

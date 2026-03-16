@@ -95,13 +95,6 @@ function Footer() {
             </button>
           </form>
           <p>Subscribe now and get insider-only updates and offers.</p>
-          <div className="footer-socials" aria-hidden="true">
-            <span>f</span>
-            <span>x</span>
-            <span>ig</span>
-            <span>yt</span>
-            <span>tt</span>
-          </div>
         </div>
       </section>
 

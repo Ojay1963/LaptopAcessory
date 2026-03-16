@@ -10,6 +10,11 @@ function getBrandLabel(name) {
   return first.length <= 3 ? `${first} ${second}` : first
 }
 
+function cleanDisplayValue(value, fallback) {
+  if (!value) return fallback
+  return value.replace(/"/g, ' inch').replace(/\s+/g, ' ').trim()
+}
+
 function ProductCard({
   item,
   addToCart,
@@ -26,7 +31,18 @@ function ProductCard({
   const isCatalog = variant === 'catalog'
   const brandLabel = getBrandLabel(item.name)
   const comparePrice = Math.round(item.price * 1.18)
-  const specsPreview = [item.specs?.[0]?.value, item.specs?.[1]?.value, item.specs?.[2]?.value].filter(Boolean)
+  const specsPreview = [
+    item.features?.[0],
+    item.specs?.[0]?.value,
+    item.specs?.[2]?.value,
+    item.specs?.[1]?.value,
+  ]
+    .filter(Boolean)
+    .filter((value, currentIndex, values) => values.indexOf(value) === currentIndex)
+    .slice(0, 4)
+  const displaySize = cleanDisplayValue(item.specs?.[3]?.value, '14 inch')
+  const displayCpu = cleanDisplayValue(item.specs?.[0]?.value, 'Intel Core')
+  const displayStock = status.label === 'In Stock' ? 'Ready' : status.label
 
   return (
     <article className={`product-card market-card ${isCatalog ? 'catalog-tile' : ''}`}>
@@ -52,9 +68,9 @@ function ProductCard({
             </div>
             <p className="reference-spec-copy">{specsPreview.join(' · ')}</p>
             <div className="reference-card-meta">
-              <span>Size: {item.specs?.[3]?.value || '14 inch'}</span>
-              <span>CPU: {item.specs?.[0]?.value || 'Intel Core'}</span>
-              <span>Status: {status.label}</span>
+              <span>Display {displaySize}</span>
+              <span>Chip {displayCpu}</span>
+              <span>{displayStock}</span>
             </div>
             <div className="reference-card-actions">
               <button

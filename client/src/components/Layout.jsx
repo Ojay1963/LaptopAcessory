@@ -288,13 +288,6 @@ function Layout() {
       </a>
 
       <div className="announcement-bar">
-        <div className="announcement-socials" aria-hidden="true">
-          <span>f</span>
-          <span>x</span>
-          <span>ig</span>
-          <span>yt</span>
-          <span>tt</span>
-        </div>
         <p>Great news! You can now enjoy free nationwide delivery on all orders this season.</p>
       </div>
 
