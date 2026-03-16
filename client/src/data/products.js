@@ -244,11 +244,58 @@ const buildProductPlaceholder = (name, category) => {
   )
 }
 
+const remoteLaptopImages = {
+  appleMacbookPro:
+    'https://cdsassets.apple.com/live/7WUAS350/images/tech-specs/mbp-16-og-202310.png',
+  dellInspiron3520:
+    'https://i5.walmartimages.com/seo/Dell-Inspiron-3520-Laptop-15-6-FHD-Intel-Core-i5-1235U-256GB-SSD-8GB-RAM-Windows-11-Home-Black_475d7d60-9a97-49bd-bfba-8ff1775f8f5c.862d13f3bcf8da332f49af85ef859563.jpeg?odnHeight=640&odnWidth=640&odnBg=FFFFFF',
+  dellLatitude7340:
+    'https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/page/category/laptop/latitude/13-7340/media-gallery/gray/notebook-latitude-13-7340-gray-gallery-4.psd?fmt=png-alpha&wid=4500&hei=4500',
+  hpElitebook640:
+    'https://hp.widen.net/content/fzmynwmbph/webp/fzmynwmbph.png?color=ffffff00&dpi=72&w=270',
+  hpLaptop15:
+    'https://hp.widen.net/content/w0dm76oznl/webp/w0dm76oznl.png?color=ffffff00&dpi=72&h=430&w=573',
+  hpEnvyX360:
+    'https://ssl-product-images.www8-hp.com/digmedialib/prodimg/lowres/c08859255.png',
+  hpSpectreX360:
+    'https://hp.widen.net/content/dfztt5yiia/webp/dfztt5yiia.png?color=ffffff00&dpi=72&h=430&w=573',
+  hpVictus15:
+    'https://hp.widen.net/content/dcm7ircgma/webp/dcm7ircgma.png?color=ffffff00&dpi=72&h=430&w=573',
+  lenovoIdeaPad1:
+    'https://p1-ofp.static.pub/fes/cms/2023/08/08/sel4t2nwkn9htaf0oihfa4lc4igkh8964931.png',
+  lenovoThinkbook13s:
+    'https://p2-ofp.static.pub/fes/cms/2023/10/27/c4rxbm98phod0thn4wvq641pnmgn7m161949.png',
+  lenovoThinkpadL14:
+    'https://p3-ofp.static.pub/ShareResource/na/assets/images/pack/2024_l14_g5_intel_packaging.png',
+  acerPredatorHeliosNeo16:
+    'https://static.acer.com/up/Resource/Acer/Laptops/Predator_Helios_Neo_16/images/20240104/Predator-Helios-Neo-16-PHN16-72-black-main.png',
+  msiGf63Thin:
+    'https://storage-asset.msi.com/global/picture/image/feature/nb/GF/Thin-GF63-12VX/msi-gf63-thin-12VX-kv.webp',
+  msiWf66:
+    'https://asset.msi.com/resize/image/global/product/product_16727105303d6d080c40c6db6323fba0f0b1f5c2d.png62405b38c58fe0f07fcef2367d8a9ba1/600.png',
+}
+
 const resolveLaptopImage = (item, index) => {
   const lower = item.name.toLowerCase()
   const tone = pickTone(item.name, index)
   const accent = pickAccent(item.name, index)
   const meta = item.features?.join(' | ') || 'Premium Laptop'
+
+  if (hasAny(lower, ['macbook'])) return remoteLaptopImages.appleMacbookPro
+  if (hasAny(lower, ['latitude 7340'])) return remoteLaptopImages.dellLatitude7340
+  if (hasAny(lower, ['inspiron 3520'])) return remoteLaptopImages.dellInspiron3520
+  if (hasAny(lower, ['elitebook'])) return remoteLaptopImages.hpElitebook640
+  if (hasAny(lower, ['hp laptop 15', 'hp 15-', 'pavilion 15'])) return remoteLaptopImages.hpLaptop15
+  if (hasAny(lower, ['pavilion x360'])) return remoteLaptopImages.hpEnvyX360
+  if (hasAny(lower, ['spectre'])) return remoteLaptopImages.hpSpectreX360
+  if (hasAny(lower, ['envy'])) return remoteLaptopImages.hpEnvyX360
+  if (hasAny(lower, ['victus'])) return remoteLaptopImages.hpVictus15
+  if (hasAny(lower, ['thinkbook'])) return remoteLaptopImages.lenovoThinkbook13s
+  if (hasAny(lower, ['thinkpad l14', 'thinkpad l13', 'thinkpad'])) return remoteLaptopImages.lenovoThinkpadL14
+  if (hasAny(lower, ['ideapad'])) return remoteLaptopImages.lenovoIdeaPad1
+  if (hasAny(lower, ['predator'])) return remoteLaptopImages.acerPredatorHeliosNeo16
+  if (hasAny(lower, ['gf63'])) return remoteLaptopImages.msiGf63Thin
+  if (hasAny(lower, ['wf66'])) return remoteLaptopImages.msiWf66
 
   if (hasAny(lower, ['x360', 'yoga', '2-in-1', 'convertible'])) {
     return buildCatalogSvg(item.name, 'Laptop', tone, accent, convertibleLaptopShape, meta)

@@ -20,13 +20,14 @@ import { loadStoredJson, removeStoredValue, saveStoredJson } from '../lib/storag
 const CART_KEY = 'ojay_cart'
 const WISHLIST_KEY = 'ojay_wishlist'
 const COMPARE_KEY = 'ojay_compare'
-const topCategories = [
-  'Computers',
-  'Office Solutions',
-  'Softwares',
-  'Hardware & Accessories',
-  'Electronics',
-  'Mobile Phones',
+const navLinks = [
+  { label: 'Laptops', to: '/laptops' },
+  { label: 'Phones', to: '/search?q=phone' },
+  { label: 'Desktops', to: '/search?q=desktop' },
+  { label: 'Smart Gadgets', to: '/accessories' },
+  { label: 'Accessories', to: '/accessories' },
+  { label: 'Components', to: '/search?q=component' },
+  { label: 'Reviews', to: '/support' },
 ]
 
 function Layout() {
@@ -96,12 +97,8 @@ function Layout() {
       return
     }
 
-    if (token) {
-      setAuthToken(token)
-    }
-    if (storedRefreshToken) {
-      setRefreshToken(storedRefreshToken)
-    }
+    if (token) setAuthToken(token)
+    if (storedRefreshToken) setRefreshToken(storedRefreshToken)
 
     const restoreSession = async () => {
       try {
@@ -111,9 +108,7 @@ function Layout() {
             setCurrentUser(payload.user)
             return
           } catch {
-            if (!storedRefreshToken) {
-              throw new Error('Session expired')
-            }
+            if (!storedRefreshToken) throw new Error('Session expired')
           }
         }
 
@@ -161,7 +156,7 @@ function Layout() {
         await logoutSession(activeRefreshToken)
       }
     } catch {
-      // Even if the server revoke call fails, we still clear the local session.
+      // Keep local logout resilient if revoke fails.
     }
 
     clearStoredSession()
@@ -199,9 +194,7 @@ function Layout() {
           return prev
         }
 
-        return prev.map((entry) =>
-          entry.id === item.id ? { ...entry, qty: nextQty } : entry
-        )
+        return prev.map((entry) => (entry.id === item.id ? { ...entry, qty: nextQty } : entry))
       }
 
       return [...prev, { ...item, qty: 1 }]
@@ -218,8 +211,7 @@ function Layout() {
 
       return prev.map((entry) => {
         if (entry.id !== id) return entry
-        const maxQty =
-          typeof entry.stock === 'number' ? Math.max(1, entry.stock) : nextQty
+        const maxQty = typeof entry.stock === 'number' ? Math.max(1, entry.stock) : nextQty
         return { ...entry, qty: Math.min(nextQty, maxQty) }
       })
     })
@@ -282,14 +274,8 @@ function Layout() {
     removeStoredValue(WISHLIST_KEY)
   }
 
-  const cartCount = useMemo(
-    () => cartItems.reduce((total, item) => total + item.qty, 0),
-    [cartItems]
-  )
-  const cartTotal = useMemo(
-    () => cartItems.reduce((total, item) => total + item.qty * item.price, 0),
-    [cartItems]
-  )
+  const cartCount = useMemo(() => cartItems.reduce((total, item) => total + item.qty, 0), [cartItems])
+  const cartTotal = useMemo(() => cartItems.reduce((total, item) => total + item.qty * item.price, 0), [cartItems])
   const compareProducts = useMemo(
     () => compareIds.map((id) => products.find((item) => item.id === id)).filter(Boolean),
     [compareIds, products]
@@ -301,73 +287,81 @@ function Layout() {
         Skip to content
       </a>
 
-      <header className="topbar">
-        <div className="brand">
-          <NavLink className="brand-mark" to="/">
-            <img className="brand-logo" src={brandLogo} alt="OJ Devices logo" />
-            <span>
-              OJ
-              <br />
-              Devices
-            </span>
-          </NavLink>
+      <div className="announcement-bar">
+        <div className="announcement-socials" aria-hidden="true">
+          <span>f</span>
+          <span>x</span>
+          <span>ig</span>
+          <span>yt</span>
+          <span>tt</span>
         </div>
-        <form className="search" onSubmit={handleSearch}>
-          <input
-            type="search"
-            placeholder="Search for laptops, chargers, keyboards..."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-          />
-        </form>
-        <div className="topbar-actions">
+        <p>Great news! You can now enjoy free nationwide delivery on all orders this season.</p>
+      </div>
+
+      <header className="topbar topbar-reference">
+        <NavLink className="brand-mark brand-mark-reference" to="/" aria-label="OJ Devices home">
+          <img className="brand-logo brand-logo-reference" src={brandLogo} alt="OJ Devices logo" />
+          <span className="brand-name-reference">OJ Devices</span>
+        </NavLink>
+
+        <nav className="primary-nav" aria-label="Primary">
+          {navLinks.map((item) => (
+            <NavLink key={item.label} to={item.to}>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="topbar-actions topbar-actions-reference">
+          <form className="search search-compact" onSubmit={handleSearch}>
+            <input
+              type="search"
+              placeholder="Search"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+            <button type="submit" aria-label="Search">
+              Go
+            </button>
+          </form>
           {currentUser ? (
             <>
               {currentUser.role === 'admin' ? (
-                <NavLink className="cart-link" to="/admin">
+                <NavLink className="icon-link" to="/admin" aria-label="Admin dashboard">
                   Admin
                 </NavLink>
               ) : (
-                <NavLink className="cart-link" to="/account">
+                <NavLink className="icon-link" to="/account" aria-label="Account">
                   Account
                 </NavLink>
               )}
-              <button className="cart-link" type="button" onClick={logout}>
+              <button className="icon-link" type="button" onClick={logout} aria-label="Logout">
                 Logout
               </button>
             </>
           ) : (
-            <NavLink className="cart-link" to="/auth">
-              {authLoading ? 'Loading...' : 'Sign in'}
+            <NavLink className="icon-link" to="/auth" aria-label="Sign in">
+              {authLoading ? '...' : 'Sign in'}
             </NavLink>
           )}
           <button
-            className={compareProducts.length > 0 ? 'compare-link active' : 'compare-link'}
+            className={compareProducts.length > 0 ? 'icon-link active' : 'icon-link'}
             type="button"
             onClick={() => setCompareOpen(true)}
+            aria-label="Compare products"
           >
-            Compare <span>{compareProducts.length}</span>
+            Compare
+            {compareProducts.length > 0 && <span className="icon-count">{compareProducts.length}</span>}
           </button>
-          <NavLink className="cart-link" to="/wishlist">
+          <NavLink className="icon-link" to="/wishlist" aria-label="Wishlist">
             Wishlist
           </NavLink>
-          <NavLink className="cart-link" to="/cart">
-            Cart <span className="cart-count">{cartCount}</span>
+          <NavLink className="icon-link" to="/cart" aria-label="Cart">
+            Cart
+            <span className="icon-count">{cartCount}</span>
           </NavLink>
         </div>
       </header>
-
-      <nav className="category-bar">
-        {topCategories.map((item, index) => (
-          <button
-            key={item}
-            type="button"
-            onClick={() => (index < 2 ? navigate('/laptops') : navigate('/accessories'))}
-          >
-            {item}
-          </button>
-        ))}
-      </nav>
 
       <main id="main-content">
         <Outlet
