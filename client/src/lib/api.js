@@ -196,6 +196,14 @@ export function getCloudinaryUploadSignature(fileName, token) {
   })
 }
 
+export function importImageUrlToCloudinary(imageUrl, fileName, token) {
+  return requestJson('/api/admin/uploads/import-url', {
+    method: 'POST',
+    body: { imageUrl, fileName },
+    token,
+  })
+}
+
 export async function uploadImageToCloudinary(file, token) {
   const payload = await getCloudinaryUploadSignature(file.name, token)
   const { upload } = payload

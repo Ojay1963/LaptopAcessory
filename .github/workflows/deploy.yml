@@ -8,32 +8,28 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
       - name: Deploy on EC2
-        uses: appleboy/ssh-action@v1.2.2
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script_stop: true
-          script: |
-            set -euo pipefail
-            TMP_DIR="$(mktemp -d)"
-            trap 'rm -rf "$TMP_DIR"' EXIT
+        shell: bash
+        env:
+          APP_DOMAIN: ${{ vars.APP_DOMAIN }}
+        run: |
+          set -euo pipefail
 
-            git clone --depth 1 --branch "${{ github.ref_name }}" "https://github.com/${{ github.repository }}.git" "$TMP_DIR/repo"
+          DOMAIN="${APP_DOMAIN:-}"
+          if [ -z "$DOMAIN" ]; then
+            DOMAIN="51.20.5.125"
+          fi
 
-            DOMAIN="${{ secrets.APP_DOMAIN }}"
-            if [ -z "$DOMAIN" ]; then
-              DOMAIN="${{ secrets.EC2_HOST }}"
-            fi
-
-            APP_DIR="/var/www/laptop-store" \
-            DATA_DIR="/var/www/oj-devices-data" \
-            SOURCE_DIR="$TMP_DIR/repo" \
-            DOMAIN="$DOMAIN" \
-            PORT="5000" \
-            NODE_VERSION="20" \
-            bash "$TMP_DIR/repo/ops/github-deploy.sh"
+          APP_DIR="/var/www/laptop-store" \
+          DATA_DIR="/var/www/oj-devices-data" \
+          SOURCE_DIR="$GITHUB_WORKSPACE" \
+          DOMAIN="$DOMAIN" \
+          PORT="5000" \
+          NODE_VERSION="20" \
+          bash "$GITHUB_WORKSPACE/ops/github-deploy.sh"

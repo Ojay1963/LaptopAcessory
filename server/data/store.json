@@ -1,5 +1,17 @@
 {
-  "users": [],
+  "users": [
+    {
+      "id": "usr_7981438d797d3d46",
+      "name": "OJ Devices Admin",
+      "email": "admin@ojdevices.ng",
+      "passwordHash": "scrypt:a4df7efd57e89133454c71e69907f99b:eb5faa141393cae5cb3014a1e617bde39a4761ece26897e60b229c16ea2762d31e240e363e556af7aa1f27dfc1cef45f57055ed635c226a6483668ccf7013aa0",
+      "role": "admin",
+      "verified": true,
+      "status": "active",
+      "createdAt": "2026-03-14T13:02:51.072Z",
+      "lastLoginAt": null
+    }
+  ],
   "orders": [],
   "otps": [],
   "refreshTokens": [],
@@ -11,5 +23,12 @@
     "brevoSenderEmail": "",
     "brevoSenderName": "OJ Devices"
   },
-  "auditLogs": []
+  "auditLogs": [
+    {
+      "id": "log_01a9234dc20ecbfd",
+      "action": "seed_admin",
+      "actorEmail": "admin@ojdevices.ng",
+      "createdAt": "2026-03-14T13:02:51.073Z"
+    }
+  ]
 }

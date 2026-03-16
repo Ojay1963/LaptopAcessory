@@ -96,11 +96,11 @@ Detailed AWS instructions live in [`ops/aws-ec2-deploy.md`](/c:/Users/user/Deskt
 
 ## Auto Deploy On Git Push
 
-This repo can auto-deploy to the EC2 server after every push to `main` using GitHub Actions.
+This repo can auto-deploy to the EC2 server after every push to `main` using a GitHub self-hosted runner on the EC2 server.
 
 What it does:
 
-- connects to your EC2 instance over SSH
+- runs the workflow directly on your EC2 instance
 - copies the latest repo contents into `/var/www/laptop-store`
 - preserves `server/.env`
 - preserves live store data by moving it outside the git working tree
@@ -110,17 +110,15 @@ Files involved:
 
 - [`.github/workflows/deploy.yml`](/c:/Users/user/Desktop/SOFTWARE/Lap/laptop-store/.github/workflows/deploy.yml)
 - [`ops/github-deploy.sh`](/c:/Users/user/Desktop/SOFTWARE/Lap/laptop-store/ops/github-deploy.sh)
+- [`ops/github-runner-setup.md`](/c:/Users/user/Desktop/SOFTWARE/Lap/laptop-store/ops/github-runner-setup.md)
 
 ### One-Time GitHub Setup
 
-In your GitHub repository, go to `Settings > Secrets and variables > Actions` and create these repository secrets:
+Set up a self-hosted runner on the EC2 server using [`ops/github-runner-setup.md`](/c:/Users/user/Desktop/SOFTWARE/Lap/laptop-store/ops/github-runner-setup.md).
 
-- `EC2_HOST`: your server IP or DNS, for example `51.20.5.125`
-- `EC2_USER`: usually `ec2-user`
-- `EC2_SSH_KEY`: the full contents of your `ojay_lap.pem` file
+After that, add one repository variable:
+
 - `APP_DOMAIN`: optional; use your real domain later, or set it to `51.20.5.125` for now
-
-After that:
 
 1. Commit these workflow changes
 2. Push to `main`

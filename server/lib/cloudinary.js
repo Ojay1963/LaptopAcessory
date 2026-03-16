@@ -40,3 +40,34 @@ export function buildSignedUploadPayload({ publicId }) {
     uploadUrl: `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
   }
 }
+
+export async function importImageFromRemoteUrl({ imageUrl, publicId }) {
+  const { cloudName, apiKey, apiSecret, folder } = getCloudinaryConfig()
+
+  if (!cloudName || !apiKey || !apiSecret) {
+    throw new Error('Cloudinary is not configured yet.')
+  }
+
+  const body = new URLSearchParams({
+    file: imageUrl,
+    folder,
+    public_id: publicId,
+  })
+
+  const auth = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64')
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${auth}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body,
+  })
+
+  const payload = await response.json().catch(() => ({}))
+  if (!response.ok) {
+    throw new Error(payload.error?.message || 'Unable to import image into Cloudinary.')
+  }
+
+  return payload
+}

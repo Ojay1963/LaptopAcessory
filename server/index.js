@@ -16,7 +16,11 @@ import {
 } from './lib/crypto.js'
 import { env, isProduction } from './lib/env.js'
 import { sendOtpEmail } from './lib/brevo.js'
-import { buildSignedUploadPayload, isCloudinaryConfigured } from './lib/cloudinary.js'
+import {
+  buildSignedUploadPayload,
+  importImageFromRemoteUrl,
+  isCloudinaryConfigured,
+} from './lib/cloudinary.js'
 import { sendError, sendOk } from './lib/http.js'
 import { initializePaystackTransaction, verifyPaystackTransaction } from './lib/paystack.js'
 import { rateLimit } from './lib/rate-limit.js'
@@ -161,6 +165,17 @@ function validateEmail(email) {
 
 function validatePassword(password) {
   return typeof password === 'string' && password.length >= 8
+}
+
+function validateRemoteImageUrl(value) {
+  if (!value) return false
+
+  try {
+    const url = new URL(value)
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
+  }
 }
 
 function consumeOtp(email, purpose, otp) {
@@ -651,6 +666,35 @@ app.post('/api/admin/uploads/signature', authenticate, requireAdmin, (req, res) 
   const publicId = `${Date.now()}-${baseName || 'upload'}`
   const upload = buildSignedUploadPayload({ publicId })
   sendOk(res, { upload })
+})
+
+app.post('/api/admin/uploads/import-url', authenticate, requireAdmin, async (req, res) => {
+  if (!isCloudinaryConfigured()) {
+    return sendError(res, 400, 'Cloudinary is not configured yet.')
+  }
+
+  const imageUrl = sanitizeString(req.body.imageUrl, 1000)
+  const fileName = sanitizeString(req.body.fileName, 160).replace(/[^a-zA-Z0-9-_]/g, '-')
+
+  if (!validateRemoteImageUrl(imageUrl)) {
+    return sendError(res, 400, 'A valid remote image URL is required.')
+  }
+
+  try {
+    const uploaded = await importImageFromRemoteUrl({
+      imageUrl,
+      publicId: `${Date.now()}-${fileName || 'remote-image'}`,
+    })
+
+    recordAudit('admin_import_cloudinary_image', req.auth.user.email, {
+      sourceUrl: imageUrl,
+      secureUrl: uploaded.secure_url,
+    })
+
+    sendOk(res, { image: uploaded })
+  } catch (error) {
+    sendError(res, 502, 'Unable to import image from remote URL.', error.message)
+  }
 })
 
 app.post('/api/admin/products', authenticate, requireAdmin, (req, res) => {

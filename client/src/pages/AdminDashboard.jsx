@@ -5,6 +5,7 @@ import {
   createAdminProduct,
   deleteAdminProduct,
   getAdminOverview,
+  importImageUrlToCloudinary,
   uploadImageToCloudinary,
   updateAdminOrder,
   updateAdminSettings,
@@ -30,6 +31,7 @@ function AdminDashboard() {
   const [productForm, setProductForm] = useState(initialProduct)
   const [settingsForm, setSettingsForm] = useState(null)
   const [uploadingImage, setUploadingImage] = useState(false)
+  const [remoteImageUrl, setRemoteImageUrl] = useState('')
 
   useEffect(() => {
     if (!authLoading && (!currentUser || currentUser.role !== 'admin')) {
@@ -100,6 +102,31 @@ function AdminDashboard() {
     }
   }
 
+  const handleRemoteImageImport = async () => {
+    if (!remoteImageUrl.trim()) return
+
+    setUploadingImage(true)
+    setMessage('')
+    try {
+      const imported = await importImageUrlToCloudinary(
+        remoteImageUrl.trim(),
+        productForm.name || 'catalog-product',
+        authToken
+      )
+      setProductForm((prev) => ({
+        ...prev,
+        image: imported.image.secure_url,
+        imageFallback: imported.image.secure_url,
+      }))
+      setRemoteImageUrl('')
+      pushToast('Remote image imported to Cloudinary')
+    } catch (error) {
+      setMessage(error.message)
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
   const handleUpdateOrder = async (orderId, orderStatus) => {
     await updateAdminOrder(orderId, { orderStatus }, authToken)
     pushToast('Order updated')
@@ -157,6 +184,17 @@ function AdminDashboard() {
             <input type="file" accept="image/*" onChange={handleProductImageUpload} disabled={uploadingImage} />
           </label>
           {uploadingImage && <p className="small-note">Uploading image to Cloudinary...</p>}
+          <label>
+            Import Image from URL
+            <input
+              value={remoteImageUrl}
+              onChange={(event) => setRemoteImageUrl(event.target.value)}
+              placeholder="https://example.com/product-image.jpg"
+            />
+          </label>
+          <button className="btn ghost" type="button" onClick={handleRemoteImageImport} disabled={uploadingImage || !remoteImageUrl.trim()}>
+            Import URL to Cloudinary
+          </button>
           <label>Image URL<input value={productForm.image} onChange={(event) => setProductForm((prev) => ({ ...prev, image: event.target.value }))} /></label>
           {productForm.image && <img src={productForm.image} alt="Product upload preview" className="admin-upload-preview" />}
           <label>Description<textarea value={productForm.desc} onChange={(event) => setProductForm((prev) => ({ ...prev, desc: event.target.value }))} /></label>

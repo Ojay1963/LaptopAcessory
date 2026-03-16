@@ -20,7 +20,6 @@ function Search() {
     isCompared,
     products,
     productsLoading,
-    productsError,
   } = useOutletContext()
   const [query, setQuery] = useState('')
   const [sortBy, setSortBy] = useState('featured')
@@ -168,7 +167,6 @@ function Search() {
               ))}
             </div>
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-            {productsError && <p className="banner-info">{productsError}</p>}
           </div>
         </section>
       )}

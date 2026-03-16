@@ -22,7 +22,6 @@ function Auth() {
   const [resetForm, setResetForm] = useState(initialReset)
   const [otpRequested, setOtpRequested] = useState(false)
   const [resetOtpRequested, setResetOtpRequested] = useState(false)
-  const [debugOtp, setDebugOtp] = useState('')
   const [isBusy, setIsBusy] = useState(false)
   const [message, setMessage] = useState('')
 
@@ -52,7 +51,6 @@ function Auth() {
   const switchMode = (nextMode) => {
     setMode(nextMode)
     setMessage('')
-    setDebugOtp('')
     setOtpRequested(false)
     setResetOtpRequested(false)
   }
@@ -80,10 +78,9 @@ function Auth() {
     setIsBusy(true)
     setMessage('')
     try {
-      const payload = await registerRequestOtp(registerForm)
+      await registerRequestOtp(registerForm)
       setOtpRequested(true)
-      setDebugOtp(payload.debugOtp || '')
-      setMessage(payload.delivery?.fallback ? 'OTP generated locally because Brevo is not configured yet.' : 'OTP sent to your email.')
+      setMessage('Check your email for the verification code, then enter it below.')
     } catch (error) {
       setMessage(error.message)
     } finally {
@@ -118,8 +115,7 @@ function Auth() {
     try {
       const payload = await requestPasswordReset({ email: resetForm.email })
       setResetOtpRequested(true)
-      setDebugOtp(payload.debugOtp || '')
-      setMessage(payload.message || 'If the account exists, a reset OTP has been sent.')
+      setMessage(payload.message || 'If that email exists, we have sent a reset code.')
     } catch (error) {
       setMessage(error.message)
     } finally {
@@ -155,7 +151,7 @@ function Auth() {
                 ? 'Create your account'
                 : 'Reset your password'}
           </h1>
-          <p>Secure customer access with JWT sessions, refresh tokens, and OTP verification.</p>
+          <p>Manage your orders, wishlist, and checkout faster with your OJ Devices account.</p>
         </div>
         <div className="hero-cta">
           {mode !== 'login' && (
@@ -243,7 +239,6 @@ function Auth() {
             <button className="btn ghost" type="button" onClick={() => switchMode('login')}>
               Already have an account?
             </button>
-            {debugOtp && <p className="small-note">Development OTP: {debugOtp}</p>}
             {message && <p className="banner-info">{message}</p>}
           </form>
         ) : (
@@ -284,20 +279,22 @@ function Auth() {
             <button className="btn ghost" type="button" onClick={() => switchMode('login')}>
               Back to login
             </button>
-            {debugOtp && <p className="small-note">Development OTP: {debugOtp}</p>}
             {message && <p className="banner-info">{message}</p>}
           </form>
         )}
 
         <aside className="checkout-summary">
-          <h3>Production baseline included</h3>
+          <h3>Why create an account?</h3>
+          <p className="small-note">
+            Save your details, follow orders from payment to delivery, and return to your basket anytime.
+          </p>
           <div className="summary-items">
-            <div className="summary-item"><span>JWT auth</span><span>Ready</span></div>
-            <div className="summary-item"><span>Refresh tokens</span><span>Ready</span></div>
-            <div className="summary-item"><span>Brevo OTP</span><span>Ready</span></div>
-            <div className="summary-item"><span>Paystack checkout</span><span>Ready</span></div>
-            <div className="summary-item"><span>Password reset</span><span>Ready</span></div>
-            <div className="summary-item"><span>Admin dashboard</span><span>Ready</span></div>
+            <div className="summary-item"><span>Track your orders</span><span>Anytime</span></div>
+            <div className="summary-item"><span>Save your favourites</span><span>Instantly</span></div>
+            <div className="summary-item"><span>Faster checkout</span><span>Ready</span></div>
+            <div className="summary-item"><span>Secure account recovery</span><span>Included</span></div>
+            <div className="summary-item"><span>Access your account history</span><span>Easy</span></div>
+            <div className="summary-item"><span>Manage deliveries</span><span>Simple</span></div>
           </div>
         </aside>
       </section>

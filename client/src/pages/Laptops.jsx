@@ -23,7 +23,6 @@ function Laptops() {
     isCompared,
     products,
     productsLoading,
-    productsError,
   } = useOutletContext()
   const [sortBy, setSortBy] = useState('featured')
   const [filters, setFilters] = useState({
@@ -134,7 +133,6 @@ function Laptops() {
               ))}
             </div>
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-            {productsError && <p className="banner-info">{productsError}</p>}
           </div>
         </section>
       )}

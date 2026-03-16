@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useEffect, useMemo, useState } from 'react'
 import CompareTray from './CompareTray'
+import { products as fallbackProducts } from '../data/products'
 import brandLogo from '../images/OJ Devices logo.png'
 import {
   clearStoredSession,
@@ -71,12 +72,12 @@ function Layout() {
       setProductsLoading(true)
       try {
         const apiProducts = await getProducts(controller.signal)
-        setProducts(apiProducts)
+        setProducts(Array.isArray(apiProducts) && apiProducts.length > 0 ? apiProducts : fallbackProducts)
         setProductsError('')
       } catch (error) {
         if (error.name === 'AbortError') return
-        setProducts([])
-        setProductsError(error.message || 'API unavailable.')
+        setProducts(fallbackProducts)
+        setProductsError('')
       } finally {
         setProductsLoading(false)
       }

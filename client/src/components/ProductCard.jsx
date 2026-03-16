@@ -66,9 +66,7 @@ function ProductCard({
         {!compact && !isCatalog && <p>{item.desc}</p>}
         <strong className="market-price">{formatPrice(item.price)}</strong>
         <Rating value={item.rating} count={isCatalog ? undefined : item.reviewCount} />
-        {!isCatalog && (
-          <span className={`stock-note ${status.tone}`}>{status.label}</span>
-        )}
+        <span className={`stock-note ${status.tone}`}>{status.label}</span>
         <div className="product-actions">
           <NavLink className="btn ghost view-link" to={`/product/${item.id}`}>
             View details

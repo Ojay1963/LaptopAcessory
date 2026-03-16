@@ -18,7 +18,6 @@ function Home() {
     isCompared,
     products,
     productsLoading,
-    productsError,
   } = useOutletContext()
   const [sortBy, setSortBy] = useState('featured')
   const [filters, setFilters] = useState({
@@ -32,6 +31,11 @@ function Home() {
   const brands = useMemo(
     () =>
       [...new Set(products.filter((item) => item.category === 'Accessory').map((item) => getProductBrand(item)))].sort(),
+    [products]
+  )
+  const featuredBrands = useMemo(() => brands.slice(0, 5), [brands])
+  const inStockCount = useMemo(
+    () => products.filter((item) => item.category === 'Accessory' && item.stock > 0).length,
     [products]
   )
   const brandCounts = useMemo(() => {
@@ -78,9 +82,45 @@ function Home() {
     <div className="page catalog-page">
       <div className="breadcrumb">Home / Hardware & Accessories / Laptop Accessories</div>
 
+      <section className="market-hero">
+        <div className="market-hero-copy">
+          <span className="eyebrow">OJ Devices Marketplace</span>
+          <h1>Laptop Accessories</h1>
+          <p>
+            Shop chargers, audio gear, storage, bags, and desk essentials with a cleaner
+            marketplace layout built for quick browsing.
+          </p>
+          <div className="market-hero-metrics">
+            <div>
+              <strong>{list.length}</strong>
+              <span>Items live</span>
+            </div>
+            <div>
+              <strong>{inStockCount}</strong>
+              <span>Ready to ship</span>
+            </div>
+            <div>
+              <strong>{brands.length}</strong>
+              <span>Trusted brands</span>
+            </div>
+          </div>
+        </div>
+        <div className="market-hero-panel">
+          <span className="eyebrow">Popular brands</span>
+          <div className="market-hero-pills">
+            {featuredBrands.map((brand) => (
+              <span key={brand}>{brand}</span>
+            ))}
+          </div>
+          <p className="small-note">
+            Compare products, shortlist favourites, and move straight into checkout.
+          </p>
+        </div>
+      </section>
+
       <section className="catalog-header">
         <div>
-          <h1>Laptop Accessories</h1>
+          <h2>Browse Accessories</h2>
         </div>
         <div className="catalog-sort">
           <span>Sort by</span>
@@ -129,7 +169,6 @@ function Home() {
               ))}
             </div>
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-            {productsError && <p className="banner-info">{productsError}</p>}
           </div>
         </section>
       )}
