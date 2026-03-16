@@ -6,7 +6,17 @@ import { createId, hashPassword } from './crypto.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const storePath = path.resolve(__dirname, '../data/store.json')
+const defaultStorePath = path.resolve(__dirname, '../data/store.json')
+const storePath = env.storeFile
+  ? (path.isAbsolute(env.storeFile) ? env.storeFile : path.resolve(process.cwd(), env.storeFile))
+  : defaultStorePath
+
+function ensureStoreFileExists() {
+  fs.mkdirSync(path.dirname(storePath), { recursive: true })
+  if (!fs.existsSync(storePath)) {
+    fs.copyFileSync(defaultStorePath, storePath)
+  }
+}
 
 function ensureStoreShape(state) {
   return {
@@ -27,11 +37,13 @@ function ensureStoreShape(state) {
 }
 
 export function readStore() {
+  ensureStoreFileExists()
   const raw = fs.readFileSync(storePath, 'utf8')
   return ensureStoreShape(JSON.parse(raw))
 }
 
 export function writeStore(state) {
+  ensureStoreFileExists()
   fs.writeFileSync(storePath, JSON.stringify(ensureStoreShape(state), null, 2))
 }
 

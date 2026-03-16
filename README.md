@@ -75,3 +75,57 @@ Deploy this folder as a Node service on Render/Railway/Fly.io.
 - Node version: 18+ recommended
 
 Because Express serves `dist`, frontend routes and API routes work from one deployment URL.
+
+## Deploy on AWS
+
+The best fit for the current codebase is a single EC2 instance because:
+
+- the frontend is built into `client/dist`
+- the Express server already serves the frontend and API together
+- app data is currently stored in `server/data/store.json`, so this should run on one server unless you move data to a database
+
+Recommended path:
+
+1. Launch an Amazon Linux 2023 EC2 instance
+2. Open inbound security group rules for `80`, `443`, and `22`
+3. Copy this project to `/var/www/laptop-store`
+4. Configure `server/.env`
+5. Run [`ops/deploy.sh`](/c:/Users/user/Desktop/SOFTWARE/Lap/laptop-store/ops/deploy.sh) on the instance
+
+Detailed AWS instructions live in [`ops/aws-ec2-deploy.md`](/c:/Users/user/Desktop/SOFTWARE/Lap/laptop-store/ops/aws-ec2-deploy.md).
+
+## Auto Deploy On Git Push
+
+This repo can auto-deploy to the EC2 server after every push to `main` using GitHub Actions.
+
+What it does:
+
+- connects to your EC2 instance over SSH
+- copies the latest repo contents into `/var/www/laptop-store`
+- preserves `server/.env`
+- preserves live store data by moving it outside the git working tree
+- reruns the existing deploy script
+
+Files involved:
+
+- [`.github/workflows/deploy.yml`](/c:/Users/user/Desktop/SOFTWARE/Lap/laptop-store/.github/workflows/deploy.yml)
+- [`ops/github-deploy.sh`](/c:/Users/user/Desktop/SOFTWARE/Lap/laptop-store/ops/github-deploy.sh)
+
+### One-Time GitHub Setup
+
+In your GitHub repository, go to `Settings > Secrets and variables > Actions` and create these repository secrets:
+
+- `EC2_HOST`: your server IP or DNS, for example `51.20.5.125`
+- `EC2_USER`: usually `ec2-user`
+- `EC2_SSH_KEY`: the full contents of your `ojay_lap.pem` file
+- `APP_DOMAIN`: optional; use your real domain later, or set it to `51.20.5.125` for now
+
+After that:
+
+1. Commit these workflow changes
+2. Push to `main`
+3. GitHub Actions will deploy automatically
+
+### Important Note About Live Data
+
+This app stores users and orders in a JSON file. Auto-deploy now preserves that file by setting `STORE_FILE=/var/www/oj-devices-data/store.json` on the server during deployment.

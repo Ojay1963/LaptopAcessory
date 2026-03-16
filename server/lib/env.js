@@ -2,6 +2,7 @@ export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: Number(process.env.PORT) || 5000,
   frontendOrigin: process.env.FRONTEND_ORIGIN || 'http://localhost:5173',
+  storeFile: process.env.STORE_FILE || '',
   jwtSecret: process.env.JWT_SECRET || 'change-me-in-production',
   jwtIssuer: process.env.JWT_ISSUER || 'oj-devices-api',
   jwtAudience: process.env.JWT_AUDIENCE || 'oj-devices-client',
